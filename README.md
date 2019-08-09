@@ -4,7 +4,7 @@ Initial target is SiFive's Unleashed U540.
 
 U540 BSP components: 
 
-* MultiZone: loaded to flash via OpenOCD => 0x2000_0000 ;
+* MultiZone: loaded to flash via OpenOCD => 0x2000_0000;
 * ZSBL:      loaded to flash via OpenOCD => 0x2080_0000;
 * FSBL:      loaded to mSD card => 0x0800_0000 L2 LIM;
 * BBL Linux: loaded to mSD card => 0x8000_0000 DDR;
@@ -43,8 +43,7 @@ Install the prebuilt RISC-V toolchain for Linux:
  sudo apt-get install screen
 ```
 
-> Note:
-> * For the Ubuntu 19.04 LTS you may need to install the libncurses5 package
+> Note: for the Ubuntu 19.04 LTS you may need to install the libncurses5 package.
 > ```
 > sudo apt-get install libncurses5:i386 
 > sudo apt-get install libncurses5:amd64
@@ -58,8 +57,7 @@ export OPENOCD=/home/<username>/riscv-openocd-20181226
 export PATH="$PATH:/home/<username>/riscv-gnu-toolchain-20181226/bin"
 ```
 
-> Note:
-> * <username> shall be replaced by your username
+> Note: <_username_> shall be replaced by your username.
 
 Close and restart the terminal session for these changes to take effect.
  
@@ -67,7 +65,7 @@ Close and restart the terminal session for these changes to take effect.
 
 ## Flash Programming Instructions
 
-1. Download the pre-built MultiZone for Linux package from Hex Five's website (http://hex-five.com/multizone-linux-20190808):
+1. Download the prebuilt MultiZone for Linux package from Hex Five's website (http://hex-five.com/multizone-linux-20190808):
 
 ```
 $ wget https://hex-five.com/wp-content/uploads/multizone-linux-20190808.tar.xz
@@ -87,13 +85,12 @@ $ ./flash.sh board
 $ ./flash.sh </dev/sdX>
 ```
 
-> Note:
-> * </dev/sdX> shall be replaced with the device name of the SD card (e.g, /dev/mmcblock0 or /dev/sda) 
+> Note: </dev/sdX> shall be replaced with the device name of the SD card (e.g, /dev/mmcblock0 or /dev/sda). 
 
 
 ## MultiZone Instructions
 
-(If you just want to test the Multizone for Linux SDK reference image, please skip directly to "Demo")
+(If you just want to test the Multizone for Linux SDK reference image, please skip directly to "Demo".)
 
 1. Clone the MultiZone for Linux SDK repo:
 
@@ -140,7 +137,7 @@ Set the mode select switches to '0001':
 
 ### Operate the Demo
 
-1. Power the board
+1. Power the board.
 
 2. Connect to the UART by setting the baudrate to 115200/8/N/1:
 
@@ -148,8 +145,7 @@ Set the mode select switches to '0001':
 $ picocom /dev/<ttyUSB_DEVICE> -b 115200
 ```
 
-> Note:
-> <ttyUSB_DEVICE> shall be replaced with the correct UART device name (e.g, ttyUSB0, ttyUSB1) 
+> Note: <ttyUSB_DEVICE> shall be replaced with the correct UART device name (e.g, ttyUSB0, ttyUSB1). 
 
 You should be able to see on the terminal the FSBL loading the BBL image:
 
@@ -205,8 +201,7 @@ CPU clock     : 1000 MHz
 Z1 > 
 ```
 
-> Note:
-> You may need to type 'restart' to see the full initial screen
+> Note: you may need to type 'restart' to see the full initial screen.
 
 
 5. Connect to Zone2 via Linux using SSH:
@@ -221,7 +216,7 @@ root@192.168.0.2's password: sifive
 # screen /dev/multizone2
 ```
 
-> Please note you may need to delete the old key before executing the SSH command:
+> Note: you may need to delete the old key before executing the SSH command.
 > ```
 > ssh-keygen -f "/home/<username>/.ssh/known_hosts" -R "192.168.0.2"
 > ```
@@ -260,8 +255,7 @@ Z2 >
 $ picocom /dev/<ttyUSB_DEVICE> -b 115200
 ```
 
-> Note:
-> * <ttyUSB_DEVICE> shall be replaced with the correct UART device name (e.g, ttyUSB0, ttyUSB1) 
+> Note: <ttyUSB_DEVICE> shall be replaced with the correct UART device name (e.g, ttyUSB0, ttyUSB1). 
 
 You shall be able to see and operate the terminal running on Zone3:
 
@@ -287,17 +281,17 @@ Z3 >
 ```
 
 > Note:  
-> Alternative way to run the demo via Ethernet - no UART connection required: 
+> Alternative way to run the demo via Ethernet (no UART connection required): 
 >  
-> Open a first SSH session as described above then connect to Zone1 via 
+> Open a first SSH session as described above then connect to Zone1 via: 
 > ```
 ># screen /dev/multizone1
 > ```
-> Open a second SSH sessions as described above then connect to Zone2 via
+> Open a second SSH sessions as described above then connect to Zone2 via:
 > ```
 > # screen /dev/multizone2
 > ```
 >
-> To terminate screen sessions type: crtl-a k
+> To terminate screen sessions type: crtl-a k.
 
 
