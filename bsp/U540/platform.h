@@ -3,9 +3,9 @@
 #ifndef HEXFIVE_PLATFORM_H
 #define HEXFIVE_PLATFORM_H
 
-#define CPU_FREQ	1000000000 //33300000
-#define RTC_FREQ	  1000000
-#define AXI_FREQ	 75000000 // ChipLink
+#define CPU_FREQ   1000000000
+#define RTC_FREQ      1000000
+#define AXI_FREQ     75000000 // ChipLink
 
 // -----------------------------------------------------------------------------
 // RTC (MTIME)
@@ -14,22 +14,9 @@
 #define RTC_MTIME	    0xBFF8
 
 // -----------------------------------------------------------------------------
-// UART0
+// UART0 - Chiplink
 // -----------------------------------------------------------------------------
-
-/*
-#define UART0_BASE 	0x10010000
-
-#define UART_TXFIFO 0x00
-#define UART_RXFIFO 0x04
-#define UART_TXCTRL 0x08
-#define UART_RXCTRL 0x0c
-#define UART_IE 	0x10
-#define UART_IP 	0x14
-#define UART_DIV 	0x18
-*/
-
-#define UART0_BASE 	0x2000104000 // ChipLink
+#define UART0_BASE 	0x2000104000
 
 #define UART_RBR 	0x00	// Receiver buffer register
 #define UART_THR 	0x00	// Transmit holding register
@@ -40,7 +27,23 @@
 #define UART_LSR 	0x14	// Line status register
 
 // -----------------------------------------------------------------------------
-// PWM
+// GPIO - ChipLink
+// -----------------------------------------------------------------------------
+#define GPIO_BASE 	0x2000103000
+
+#define GPIO_0_CFG 	0x00	// LED4
+#define GPIO_1_CFG 	0x04	// LED5
+#define GPIO_2_CFG 	0x08	// J2 pin13
+#define GPIO_3_CFG 	0x0C	// J2 pin14
+#define GPIO_4_CFG 	0x10	// SW1
+#define GPIO_5_CFG 	0x14	// SW2
+#define GPIO_6_CFG 	0x18	// J2-pin9
+#define GPIO_7_CFG 	0x1C	// USB1 reset
+#define GPIO_IN		0x84
+#define GPIO_OUT	0x88
+
+// -----------------------------------------------------------------------------
+// PWM - Unleashed
 // -----------------------------------------------------------------------------
 #define PWM0_BASE	0x10020000
 
@@ -52,8 +55,22 @@
 #define PWM_CMP2 	0x28	// D3 Green
 #define PWM_CMP3 	0x2C	// D4 Green
 
+/*
 // -----------------------------------------------------------------------------
-// GPIO
+// UART0 - Unleashed
+// -----------------------------------------------------------------------------
+#define UART0_BASE 	0x10010000
+
+#define UART_TXFIFO 0x00
+#define UART_RXFIFO 0x04
+#define UART_TXCTRL 0x08
+#define UART_RXCTRL 0x0c
+#define UART_IE 	0x10
+#define UART_IP 	0x14
+#define UART_DIV 	0x18
+
+// -----------------------------------------------------------------------------
+// GPIO - Unleashed
 // -----------------------------------------------------------------------------
 #define GPIO_BASE 		0x10060000
 
@@ -72,6 +89,7 @@
 #define GPIO_LOW_IE     0x30
 #define GPIO_LOW_IP     0x34
 #define GPIO_OUTPUT_XOR 0x40
+*/
 
 // -----------------------------------------------------------------------------
 // C Helper functions
@@ -81,13 +99,10 @@
 #define _REG32(base, offset) (*(volatile uint32_t *)((base) + (offset)))
 #define _REG16(base, offset) (*(volatile uint16_t *)((base) + (offset)))
 
-#define RTC_REG(offset) _REG64(RTC_BASE, offset)
+#define RTC_REG(offset)   _REG64(RTC_BASE,   offset)
 #define UART0_REG(offset) _REG32(UART0_BASE, offset)
-#define PWM0_REG(offset) _REG32(PWM0_BASE, offset)
-#define GPIO_REG(offset) _REG32(GPIO_BASE, offset)
-
-#define UART2_REG(offset) _REG32(UART2_BASE, offset) // ChipLink
-
+#define PWM0_REG(offset)  _REG32(PWM0_BASE,  offset)
+#define GPIO_REG(offset)  _REG32(GPIO_BASE,  offset)
 
 #endif /* HEXFIVE_PLATFORM_H */
 

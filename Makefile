@@ -70,9 +70,12 @@ all: clean
 	$(MAKE) -C zone2
 	$(MAKE) -C zone3
 	$(MAKE) -C zone4
-	java -jar multizone.jar -c bsp/$(BOARD)/multizone.cfg zone1/zone1.hex zone2/zone2.hex zone3/zone3.hex zone4/zone4.hex --arch=$(BOARD)
+	java -jar multizone.jar -c bsp/$(BOARD)/multizone.cfg --arch=$(BOARD) \
+		zone1/zone1.hex \
+		zone2/zone2.hex \
+		zone3/zone3.hex \
+		zone4/zone4.hex	
 	
-
 .PHONY: clean
 clean: 
 	$(MAKE) -C zone1 clean

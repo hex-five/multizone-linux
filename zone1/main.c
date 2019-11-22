@@ -368,65 +368,24 @@ void print_pmp(void){
 				esc=0;
 		}
 
-		// poll & print incoming messages
-		int msg[MSG_SIZE]={0,0,0,0};
+		// Message handler
+		for (int zone=1; zone<=4; zone++){
 
+			char msg[16]="";
 
-		if (ECALL_RECV(1, msg)){
+			if (ECALL_RECV(zone, msg)) {
 
-			printf("\e7"); // save curs pos
-			printf("\e[2K\r"); // 2K clear entire line - cur pos dosn't change
+				if (strcmp("ping", msg) == 0)
+					ECALL_SEND(zone, "pong");
 
-			printf("Z1 > 0x%08x 0x%08x 0x%08x 0x%08x \n", msg[0], msg[1], msg[2], msg[3]);
-
-			printf("\nZ%d > ",ZONE);
-			printf("%s",&cmd_line[0]);
-			printf("\e8");   // restore curs pos
-			printf("\e[2B"); // curs down down
-		}
-
-		if (ECALL_RECV(2, msg)){
-
-			printf("\e7"); // save curs pos
-			printf("\e[2K\r"); // 2K clear entire line - cur pos dosn't change
-
-			printf("Z2 > 0x%08x 0x%08x 0x%08x 0x%08x \n", msg[0], msg[1], msg[2], msg[3]);
-
-			printf("\nZ%d > ",ZONE);
-			printf("%s",&cmd_line[0]);
-			printf("\e8");   // restore curs pos
-			printf("\e[2B"); // curs down down
-		}
-
-		if (ECALL_RECV(3, msg)){
-
-			printf("\e7"); // save curs pos
-			printf("\e[2K\r"); // 2K clear entire line - cur pos dosn't change
-
-			printf("Z3 > 0x%08x 0x%08x 0x%08x 0x%08x \n", msg[0], msg[1], msg[2], msg[3]);
-
-			printf("\nZ%d > ",ZONE);
-			printf("%s",&cmd_line[0]);
-			printf("\e8");   // restore curs pos
-			printf("\e[2B"); // curs down down
-		}
-
-		if (ECALL_RECV(4, msg)){
-
-			printf("\e7"); // save curs pos
-			printf("\e[2K\r"); // 2K clear entire line - cur pos dosn't change
-
-			switch (msg[0]) {
-			case 1   : printf("Z4 > USB DEVICE ATTACH VID=0x1267 PID=0x0000\n"); break;
-			case 2   : printf("Z4 > USB DEVICE DETACH\n"); break;
-			case 'p' : printf("Z4 > pong\n"); break;
-			default  : printf("Z4 > ???\n"); break;
+				else {
+					printf("\e7\e[2K");	// save curs pos & clear entire line
+					printf("\rZ%d > %.16s\n", zone, msg); 	// print source zone
+					printf("\nZ%d > %s", ZONE, cmd_line);	// print message
+					printf("\e8\e[2B");	// restore curs pos & curs down 2x
+				}
 			}
 
-			printf("\nZ%d > ",ZONE);
-			printf("%s",&cmd_line[0]);
-			printf("\e8");   // restore curs pos
-			printf("\e[2B"); // curs down down
 		}
 
 		ECALL_YIELD();
@@ -491,7 +450,9 @@ int main (void) {
 		char * tk2 = strtok (NULL, " ");
 		char * tk3 = strtok (NULL, " ");
 
+		// --------------------------------------------------------------------
 		if (tk1 != NULL && strcmp(tk1, "load")==0){
+		// --------------------------------------------------------------------
 			if (tk2 != NULL){
 				uint8_t data = 0x00;
 				const uint64_t addr = strtoull(tk2, NULL, 16);
@@ -499,7 +460,9 @@ int main (void) {
 				printf("0x%08x : 0x%02x \n", (unsigned int)addr, data);
 			} else printf("Syntax: load address \n");
 
+		// --------------------------------------------------------------------
 		} else if (tk1 != NULL && strcmp(tk1, "store")==0){
+		// --------------------------------------------------------------------
 			if (tk2 != NULL && tk3 != NULL){
 				const uint32_t data = (uint32_t)strtoul(tk3, NULL, 16);
 				const uint64_t addr = strtoull(tk2, NULL, 16);
@@ -514,29 +477,37 @@ int main (void) {
 				printf("0x%08x : 0x%02x \n", (unsigned int)addr, (unsigned int)data);
 			} else printf("Syntax: store address data \n");
 
+		// --------------------------------------------------------------------
 		} else if (tk1 != NULL && strcmp(tk1, "exec")==0){
+		// --------------------------------------------------------------------
 			if (tk2 != NULL){
 				const uint64_t addr = strtoull(tk2, NULL, 16);
 			    asm ( "jr (%0)" : : "r"(addr));
-		} else printf("Syntax: exec address \n");
+			} else printf("Syntax: exec address \n");
 
+		// --------------------------------------------------------------------
 		} else if (tk1 != NULL && strcmp(tk1, "send")==0){
-			if (tk2 != NULL && tk2[0]>='0' && tk2[0]<='4' && tk3 != NULL){
-				for (int i=0; i<MSG_SIZE; i++)
-					msg[i] = i<strlen(tk3) ? (unsigned int)*(tk3+i) : 0x0;
-				if (!ECALL_SEND(tk2[0]-'0', msg))
+		// --------------------------------------------------------------------
+			if (tk2 != NULL && tk2[0]>='1' && tk2[0]<='4' && tk3 != NULL){
+				char msg[16]; strncpy(msg, tk3, 16);
+				if (!ECALL_SEND( tk2[0]-'0', msg) )
 					printf("Error: Inbox full.\n");
-			} else printf("Syntax: send {0|1|2|3|4} message \n");
+			} else printf("Syntax: send {1|2|3|4} message \n");
 
+		// --------------------------------------------------------------------
 		} else if (tk1 != NULL && strcmp(tk1, "recv")==0){
-			if (tk2 != NULL && tk2[0]>='0' && tk2[0]<='4'){
+		// --------------------------------------------------------------------
+			if (tk2 != NULL && tk2[0]>='1' && tk2[0]<='4'){
+				char msg[16];
 				if (ECALL_RECV(tk2[0]-'0', msg))
-					printf("msg : 0x%08x 0x%08x 0x%08x 0x%08x \n", msg[0], msg[1], msg[2], msg[3]);
+					printf("msg : %.16s\n", msg);
 				else
 					printf("Error: Inbox empty.\n");
-			} else printf("Syntax: recv {0|1|2|3|4} \n");
+			} else printf("Syntax: recv {1|2|3|4} \n");
 
+		// --------------------------------------------------------------------
 		} else if (tk1 != NULL && strcmp(tk1, "yield")==0){
+		// --------------------------------------------------------------------
 			uint64_t C1 = ECALL_CSRR_MCYCLE();
 			ECALL_YIELD();
 			uint64_t C2 = ECALL_CSRR_MCYCLE();
