@@ -225,15 +225,19 @@ size_t _write(int file, const void *ptr, size_t len) {
 		case ZONE1_FD:
 		case ZONE2_FD:
 		case ZONE3_FD:
-		case ZONE4_FD:
+		case ZONE4_FD:{
 
-			/* Pack Buff into MZ messages */
+			/* Pack buff into a message & send - non blocking, timeout 5 x jiffy */
+			const unsigned long timeout = ECALL_CSRR_MTIME() + 5*10*RTC_FREQ/1000;
+
 			while (i < len) {
+
 				int transfer = len - i;
 				if (transfer > sizeof(msg))
 					transfer = sizeof(msg);
 
 				memset(msg, 0, sizeof(msg));
+
 				/* Copy buff to msg (8-bit operations) */
 				int real_transfer = 0;
 				for(int j=0; j<transfer; j++, real_transfer++){
@@ -250,6 +254,7 @@ size_t _write(int file, const void *ptr, size_t len) {
 					}
 				}
 
+				/* Send message */
 				if (ECALL_SEND((file-ZONE0_FD), msg)) {
 					/* In the last, need to pack on the next but update buff */
 					if(real_transfer<transfer){ 
@@ -257,22 +262,24 @@ size_t _write(int file, const void *ptr, size_t len) {
 					}
 					i += real_transfer;
 					buff += real_transfer;
+
+				} else if (ECALL_CSRR_MTIME() > timeout){
+					return -1;
 				}
+
 				ECALL_YIELD();
 
-			}
+			} // while()
 
 			return i;
 			break;
-		
-		default:
-
-			/* Do nothing */
-			break;
 		}
 
-	}
+		} // switch()
+
+	} // if(_isatty)
 
 	return -1;
-}
+
+} // _write()
 
