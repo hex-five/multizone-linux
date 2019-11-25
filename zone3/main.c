@@ -24,7 +24,7 @@ void trap_0x0_handler(void){
 	printf("Instruction address misaligned : 0x%08x 0x%08x 0x%08x \n", msg[0], msg[1], msg[2]);
 
 	printf("\nPress any key to restart");
-	char c='\0'; while ( read(STD_IN, &c, 1) <=0 ) ECALL_YIELD(); asm ("j _start");
+	char c='\0'; while ( read(STD_IN, &c, 1) <=0 ); asm ("j _start"); // blocking
 
 }
 
@@ -36,7 +36,7 @@ void trap_0x1_handler(void){
 	printf("Instruction access fault : 0x%08x 0x%08x 0x%08x \n", msg[0], msg[1], msg[2]);
 	
 	printf("\nPress any key to restart");
-	char c='\0'; while ( read(STD_IN, &c, 1) <=0 ) ECALL_YIELD(); asm ("j _start");
+	char c='\0'; while ( read(STD_IN, &c, 1) <=0 ); asm ("j _start"); // blocking
 
 }
 
