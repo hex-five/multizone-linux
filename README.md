@@ -212,7 +212,7 @@ The authenticity of host '192.168.0.2 (192.168.0.2)' can't be established.
 ECDSA key fingerprint is SHA256:5CMY+vBWX7VIyJ+ejpwtw9kojdYogIdBFPSJ9YmG33g.
 Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added '192.168.0.2' (ECDSA) to the list of known hosts.
-root@192.168.0.2's password: sifive
+root@192.168.0.2's password: hexfive
 # screen /dev/multizone2
 ```
 
