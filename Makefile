@@ -21,31 +21,11 @@ export AR      := $(CROSS_COMPILE)ar
 # Platform definitions
 #############################################################
 
-BOARD ?= E31
-ifeq ($(BOARD),E21)
-	ARCH := rv32
-	RISCV_ARCH := $(ARCH)imac
-	RISCV_ABI := ilp32
-else ifeq ($(BOARD),E31)
-	ARCH := rv32
-	RISCV_ARCH := $(ARCH)imac
-	RISCV_ABI := ilp32	
-else ifeq ($(BOARD),E51)
-	ARCH := rv64
-	RISCV_ARCH := $(ARCH)imac
-	RISCV_ABI := lp64
-else ifeq ($(BOARD),S51)
-	ARCH := rv64
-	RISCV_ARCH := $(ARCH)imac
-	RISCV_ABI := lp64
-else ifeq ($(BOARD),U540)
+BOARD ?= U540
+ifeq ($(BOARD),U540)
 	ARCH := rv64
 	RISCV_ARCH := $(ARCH)imac
 	RISCV_ABI := lp64	
-else ifeq ($(BOARD),X300)
-	ARCH := rv32
-	RISCV_ARCH := $(ARCH)imac
-	RISCV_ABI := ilp32	
 else
 	$(error Unsupported board $(BOARD))
 endif
