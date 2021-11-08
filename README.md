@@ -294,4 +294,7 @@ Z3 >
 >
 > To terminate screen sessions type: crtl-a k.
 
+ 
+MultiZone and HEX-Five are registered trademarks of Hex Five Security, Inc.
 
+MultiZone technology is protected by patents US 16450826 and PCT US1938774.
